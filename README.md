@@ -1,6 +1,6 @@
 # pgitic_cdh5
 Proyecto para la asignatura del Máster en Ingeniería Informática llamada Planificación y Gestión de Infraestructuras TIC, en la cual se automatiza la instalación de CDH5 perteneciente a Hadoop, mediante el uso de Vagrant y Ansible.
-
+Dicho proyecto se ha desarrollado una versión para Ubuntu y otra para Centos, ambas funcionan correctamente.
 ## Instalación
 Instalación aplicada a máquina **Ubuntu 19**
 Pasos previos a la ejecución del "Vagrant up"
@@ -33,7 +33,6 @@ $ sudo dpkg -i virtualbox-6.1_6.1.4-136177~Ubuntu~eoan_amd64.deb
 $ virtualbox
 ```
 
-
 ## Ejecución:
 Nos dirigimos al directorio /src que es donde encontramos tanto el playbook de Ansible como de Vagrant y ejecutamos:
 ```
@@ -46,6 +45,41 @@ $ vagrant ssh
 
 ## Carpeta compartida
 Se ha creado una carpeta compartida entre el host y el guest (Hadoop) llamada "hadoop" (host) y encontrandose en /tmp/ (guest).
+
+
+## Probar Hadoop
+```
+$ cd /tmp
+$ sudo -u hdfs hadoop fs -mkdir -p /user/vagrant/trabajo
+$ sudo -u hdfs hadoop fs -put donquijote.txt /user/vagrant/trabajo
+$ cd /tmp/WordCountSimple
+$ make
+$ sudo hadoop jar WordCountSimple.jar /user/vagrant/trabajo /user/vagrant/trabajo/salida
+
+```
+
+## Acceso al sistema de archivos
+Para acceder al sistema de archivos "distribuido" mediante el navegador debemos teclear la siguiente dirección ip:<br />
+Centos
+```
+192.168.100.100:50070
+```
+Ubuntu
+```
+192.168.100.200:50070
+```
+## Comprobar el estado de los servicios:
+```
+$ sudo service hadoop-hdfs-datanode status
+$ sudo service hadoop-hdfs-namenode status
+$ sudo service hadoop-hdfs-secondarynamenode status
+$ sudo service hadoop-0.20-mapreduce-jobtracker status
+$ sudo service hadoop-0.20-mapreduce-tasktracker status
+```
+Aquellos servicios que estén muertos se deben levantar empleando:
+```
+$ sudo service <ServicioCaido> start
+```
 
 ## Posibles fallos
 ### Error sobre máquina virtual.
@@ -61,39 +95,6 @@ $ vagrant vbguest
 $ vagrant reload default
 ```
 
-
-$ sudo yum install java-1.8.0-openjdk-devel
-
-
-## Probar Hadoop
-```
-$ hdfs namenode -format -force
-$ cd /tmp
-$ sudo -u hdfs hadoop fs -mkdir -p /user/vagrant/trabajo
-$ sudo -u hdfs hadoop fs -put donquijote.txt /user/vagrant/trabajo
-$ cd /tmp/WordCountSimple
-$ make
-$ sudo -u hdfs hadoop jar WordCountSimple.jar /user/vagrant/trabajo /user/vagrant/trabajo/salida
-
-```
-
-## Acceso al sistema de archivos
-Para acceder al sistema de archivos "distribuido" mediante el navegador debemos teclear la siguiente dirección ip:
-```
-192.168.100.100:50070
-```
-## Comprobar el estado de los servicios:
-```
-$ sudo service hadoop-hdfs-datanode status
-$ sudo service hadoop-hdfs-namenode status
-$ sudo service hadoop-hdfs-secondarynamenode status
-$ sudo service hadoop-0.20-mapreduce-jobtracker status
-$ sudo service hadoop-0.20-mapreduce-tasktracker status
-```
-Aquellos servicios que estén muertos se deben levantar empleando:
-```
-$ sudo service <ServicioCaido> start
-```
 ## Licencia:
 Proyecto bajo licencia [LICENSE.md](LICENSE.md)
 
