@@ -1,0 +1,70 @@
+### Instalación CDH5 & Hadoop en Centos-6.10 (Final) ###
+---
+- name: Instalación OpenJDK, CDH5 y Hadoop
+  hosts: vagrant
+  remote_user: vagrant
+  become: yes
+  tasks:
+  # Instalación de OpenJDK como requisito previo
+  - name: Descarga de OpenJDK 7
+    yum:
+      name: java-1.7.0-openjdk
+
+  - name: Instalación cdh5-repository
+    yum:
+      name: 'http://archive.cloudera.com/cdh5/one-click-install/redhat/6/x86_64/cloudera-cdh-5-0.x86_64.rpm'
+      disable_gpg_check: yes
+
+  - name: Instalación Hadoop
+    yum:
+      name: hadoop-0.20-conf-pseudo
+
+  - name: Comprobación instalación Hadoop
+    command: rpm -ql hadoop-0.20-conf-pseudo
+
+  # Configuración Hadoop
+  - name: Paso 1 - Formatear el NameNode
+    command: sudo -u hdfs hdfs namenode -format -force
+
+  - name: Paso 2 - Arrancar los servicios HDFS
+    shell: "for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x start ; done"
+
+  - name: Paso 3 - Crear el directorio /tmp
+    command: sudo -u hdfs hadoop fs -mkdir -p /tmp; sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
+
+  - name: Paso 4 - Crear los directorios de sistema MapReduce
+    command: |
+      sudo -u hdfs hadoop fs -mkdir -p /var/lib/hadoop-hdfs/cache/mapred/mapred/staging; 
+      sudo -u hdfs hadoop fs -chmod 1777 /var/lib/hadoop-hdfs/cache/mapred/mapred/staging; 
+      sudo -u hdfs hadoop fs -chown -R mapred /var/lib/hadoop-hdfs/cache/mapred;
+  
+  - name: Paso 5 - Verificar la estructura de ficheros HDFS
+    command: sudo -u hdfs hadoop fs -ls -R /
+
+  - name: Paso 6 - Arrancar Hadoop
+    shell: "for x in `cd /etc/init.d ; ls hadoop-0.20-mapreduce-*` ; do sudo service $x start ; done"
+
+  - name: Paso 7 - Crear los directorios de usuario
+    shell: |
+      sudo -u hdfs hadoop fs -mkdir -p /user/$USER;
+      sudo -u hdfs hadoop fs -chown $USER /user/$USER
+
+  # Paquete necesario para usar el módulo template
+  - name: Instalación Python Bindings
+    yum:
+      name: libselinux-python
+
+  # Ejecución del ejemplo MRv1
+  - name: Creación script de ejemplo de aplicación con MRv1
+    template:
+      src: templates/hdfs.sh
+      dest: /tmp/hdfs.sh
+      owner: hdfs
+      group: hdfs
+      mode: 0644
+  
+  - name: Ejecución script de ejemplo de aplicación con MRv1
+    shell:
+      cmd: sh /tmp/hdfs.sh
+
+...
