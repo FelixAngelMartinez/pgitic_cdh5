@@ -1,8 +1,8 @@
 # pgitic_cdh5
-Proyecto para la asignatura del Máster en Ingeniería Informática llamada Planificación y Gestión de Infraestructuras TIC, en la cual se automatiza la instalación de CDH5 perteneciente a Hadoop, mediante el uso de Vagrant y Ansible.
+Proyecto para la asignatura del Máster en Ingeniería Informática llamada Planificación y Gestión de Infraestructuras TIC, en la cual se automatiza la instalación de CDH5 perteneciente a Hadoop, mediante el uso de Vagrant y Ansible.<br />
 Dicho proyecto se ha desarrollado una versión para Ubuntu y otra para Centos, ambas funcionan correctamente.
 ## Instalación
-Instalación aplicada a máquina **Ubuntu 19**
+Instalación aplicada a máquina **Ubuntu 19**<br />
 Pasos previos a la ejecución del "Vagrant up"
 ``` 
 $ sudo apt update
@@ -24,8 +24,8 @@ $ sudo dpkg -i vagrant_2.2.7_x86_64.deb
 $ vagrant --version
 ```
 ### Instalacion VirtualBox
-Para que Vagrant despliegue las máquinas virtuales es necesario un hipervisor que cree dichas máquinas, para lo cual en este caso hemos elegido VBox, pudiéndose realizar también con otros como VMWare.
-[Documentación VBox](https://www.virtualbox.org/wiki/Documentation)
+Para que Vagrant despliegue las máquinas virtuales es necesario un hipervisor que cree dichas máquinas, para lo cual en este caso hemos elegido VBox, pudiéndose realizar también con otros como VMWare.<br />
+[Documentación VBox](https://www.virtualbox.org/wiki/Documentation)<br />
 Guía para Ubuntu 19.10:
 ```
 $ wget https://download.virtualbox.org/virtualbox/6.1.4/virtualbox-6.1_6.1.4-136177~Ubuntu~eoan_amd64.deb
@@ -68,6 +68,16 @@ Ubuntu
 ```
 192.168.100.200:50070
 ```
+### Parar la máquina:
+Si deseamos parar la máquina virtual debemos ejecutar el comando:
+```
+$ vagrant halt
+```
+Si finalmente queremos eliminarla, se hará con el siguiente comando:
+```
+$ vagrant destroy -f
+```
+
 ## Comprobar el estado de los servicios:
 ```
 $ sudo service hadoop-hdfs-datanode status

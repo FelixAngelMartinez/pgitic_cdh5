@@ -33,19 +33,4 @@
   - name: Paso 2 - Arrancar los servicios HDFS
     shell: "for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x start ; done"
 
-  - name: Crear directorio de trabajo
-    command: "sudo -u hdfs hadoop fs -mkdir -p /tmp; sudo -u hdfs hadoop fs -chmod -R 1777 /tmp"
-  - name: Copiar archivo donquijote.txt en el directorio de trabajo
-    command: sudo -u hdfs hadoop fs -put /tmp/donquijote.txt /tmp
-  - name: Compilar el JAR
-    command:
-      cmd: make
-      chdir: /tmp/WordCountSimple
-  - name: Ejecutar el trabajo MapReduce
-    command: sudo -u hdfs hadoop jar /tmp/WordCountSimple/WordCountSimple.jar /tmp/ /tmp/salida
-  - name: Comprobar si el trabajo se ha ejecutado con éxito
-    command: hadoop fs -ls /home/vagrant/trabajo/salida
-  - name: Copiamos el archivo de resultado al sistema de archivos de la máquina
-    command: hadoop fs -get /home/vagrant/trabajo/salida/part*
-
 ...
