@@ -6,28 +6,30 @@
   become: yes
   tasks:
   # Instalación de OpenJDK como requisito previo
-  - name: Descarga de OpenJDK 8
+  - name: Descargar OpenJDK-7
     yum:
-      name: java-1.8.0-openjdk-devel
+      name: java-1.7.0-openjdk
 
-  - name: Instalación cdh5-repository
+  - name: Instalar cdh5-repository
     yum:
       name: 'http://archive.cloudera.com/cdh5/one-click-install/redhat/6/x86_64/cloudera-cdh-5-0.x86_64.rpm'
       disable_gpg_check: yes
 
-  - name: Instalación Hadoop
+  - name: Instalar Hadoop
     yum:
       name: hadoop-0.20-conf-pseudo
 
-  - name: Comprobación instalación Hadoop
+  - name: Verificar instalación Hadoop
     command: rpm -ql hadoop-0.20-conf-pseudo
 
   # Configuración Hadoop
-  - name: Paso 1 - Formatear el NameNode
+  - name: Paso 1 - Formatear el sistema de archivos
     command: sudo -u hdfs hdfs namenode -format -force
 
   - name: Paso 2 - Arrancar los servicios HDFS
     shell: "for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x start ; done"
+
+  # Llegados a este punto, nos vamos a 192.168.100.100:50070 para verificar la instalación
 
   - name: Paso 3 - Crear el directorio /tmp
     command: sudo -u hdfs hadoop fs -mkdir -p /tmp; sudo -u hdfs hadoop fs -chmod -R 1777 /tmp

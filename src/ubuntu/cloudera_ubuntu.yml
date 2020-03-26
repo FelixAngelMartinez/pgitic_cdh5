@@ -1,36 +1,40 @@
+### Instalación CDH5 & Hadoop en Ubuntu 12.04 ###
 ---
-- hosts: vagrant
+- name: Instalación OpenJDK, CDH5 y Hadoop
+  hosts: vagrant
   remote_user: vagrant
   become: yes
   tasks:
-  - name: Download OpenJDK
+  - name: Descargar OpenJDK-7
     apt:
       name: 
         - openjdk-7-jre
         - openjdk-7-jdk
       force_apt_get: yes
 
-  - name: Download and Install CDH 5 package
+  - name: Descargar e instalar el paquete CDH5
     apt:
       deb: http://archive.cloudera.com/cdh5/one-click-install/precise/amd64/cdh5-repository_1.0_all.deb
 
-  - name: Update apt-get
+  - name: Actualiazar con apt-get update
     apt:
       update_cache: yes
 
-  - name: Install Hadoop
+  - name: Instalar Hadoop
     apt:
       name: hadoop-0.20-conf-pseudo
       force_apt_get: yes
   
-  - name: Comprobación instalación Hadoop
+  - name: Verificar instalación Hadoop
     command: dpkg -L hadoop-0.20-conf-pseudo
 
   # Configuración Hadoop
-  - name: Paso 1 - Formatear el NameNode
+  - name: Formatear el sistema de archivos
     command: sudo -u hdfs hdfs namenode -format -force
 
-  - name: Paso 2 - Arrancar los servicios HDFS
+  - name: Arrancar los servicios HDFS
     shell: "for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x start ; done"
+
+  # Llegados a este punto, nos vamos a 192.168.100.100:50070 para verificar la instalación
 
 ...

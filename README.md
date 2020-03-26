@@ -66,8 +66,9 @@ Centos
 ```
 Ubuntu
 ```
-192.168.100.200:50070
+192.168.100.100:50070
 ```
+No es compatible lanzarlos a la vez, a no ser, que se cambie la ip de una de las máquinas tanto en el archivo inventory.ini y en su respectivo Vagrantfile.
 ### Parar la máquina:
 Si deseamos parar la máquina virtual debemos ejecutar el comando:
 ```
