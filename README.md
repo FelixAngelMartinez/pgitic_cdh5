@@ -44,13 +44,56 @@ Para conectarnos a la máquina debemos ejecutar el comando:
 $ vagrant ssh
 ```
 
+## Carpeta compartida
+Se ha creado una carpeta compartida entre el host y el guest (Hadoop) llamada "hadoop" (host) y encontrandose en /tmp/ (guest).
 
 ## Posibles fallos
 ### Error sobre máquina virtual.
 Si dicho programa se ejecuta sobre un host Windows, debemos asegurarnos que tenemos habilitado desde la BIOS: Hyper-V. También debemos irnos a "Activar o desactivar características de windows" y habilitar Hyper-V.
 ### Conexión ssh
-Es posible que nos de fallo si el repositorio lo clonamos en un directorio que tenga alguna ruta previa con espacios, por lo que instamos a que se controle que la ruta a dicho directorio no contenga carácteres especiales ni espacios. Para evitar esto podemos clonarlo directamente en C:
-.
+Es posible que nos de fallo si el repositorio lo colnamos en un directorio que tenga alguna ruta previa con espacios, por lo que instamos a que se controle que la ruta a dicho directorio no contenga carácteres especiales ni espacios. Para evitar esto podemos clonarlo directamente en C:
+### Problema con las carpetas compartidas
+"Vagrant was unable to mount VirtualBox shared folders".
+Solución:
+```
+$ vagrant plugin install vagrant-vbguest
+$ vagrant vbguest
+$ vagrant reload default
+```
+
+
+$ sudo yum install java-1.8.0-openjdk-devel
+
+
+## Probar Hadoop
+```
+$ hdfs namenode -format -force
+$ cd /tmp
+$ sudo -u hdfs hadoop fs -mkdir -p /user/vagrant/trabajo
+$ sudo -u hdfs hadoop fs -put donquijote.txt /user/vagrant/trabajo
+$ cd /tmp/WordCountSimple
+$ make
+$ sudo -u hdfs hadoop jar WordCountSimple.jar /user/vagrant/trabajo /user/vagrant/trabajo/salida
+
+```
+
+## Acceso al sistema de archivos
+Para acceder al sistema de archivos "distribuido" mediante el navegador debemos teclear la siguiente dirección ip:
+```
+192.168.100.100:50070
+```
+## Comprobar el estado de los servicios:
+```
+$ sudo service hadoop-hdfs-datanode status
+$ sudo service hadoop-hdfs-namenode status
+$ sudo service hadoop-hdfs-secondarynamenode status
+$ sudo service hadoop-0.20-mapreduce-jobtracker status
+$ sudo service hadoop-0.20-mapreduce-tasktracker status
+```
+Aquellos servicios que estén muertos se deben levantar empleando:
+```
+$ sudo service <ServicioCaido> start
+```
 ## Licencia:
 Proyecto bajo licencia [LICENSE.md](LICENSE.md)
 

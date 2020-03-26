@@ -6,9 +6,9 @@
   become: yes
   tasks:
   # Instalación de OpenJDK como requisito previo
-  - name: Descarga de OpenJDK 7
+  - name: Descarga de OpenJDK 8
     yum:
-      name: java-1.7.0-openjdk
+      name: java-1.8.0-openjdk-devel
 
   - name: Instalación cdh5-repository
     yum:

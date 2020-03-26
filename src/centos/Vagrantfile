@@ -1,0 +1,19 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "centos/6" #Centos-6
+  config.vm.network :private_network, ip: "192.168.100.100"
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "vv"
+    ansible.playbook = "cloudera_centos.yml"
+    ansible.inventory_path = "inventory.ini"
+    ansible.host_key_checking = "false"
+    ansible.limit = "all"
+  end
+  
+  config.vm.synced_folder "./hadoop", "/tmp"
+end
